@@ -1,0 +1,16 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.header h1 {
+    display: inline;
+}
+
+.header img {
+    vertical-align: top;
+}
+
+.order-header {
+    cursor: pointer;
+}
