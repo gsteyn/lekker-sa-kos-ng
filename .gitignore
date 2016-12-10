@@ -1,0 +1,35 @@
+logs/*
+!.gitkeep
+node_modules/
+lib/
+app/lib/
+tmp
+.DS_Store
+.idea
+reports/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Maven
+log/
+target/
+
+bin/
+.git/
+
+# Netbeans
+nbproject/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+.nb-gradle/
