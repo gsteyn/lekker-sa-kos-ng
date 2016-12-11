@@ -29,7 +29,7 @@
             <img ng-src="{{$ctrl.selectedDish.isVegetarian ? './img/veg.png' : './img/non-veg.png'}}" 
                   alt="{{$ctrl.selectedDish.isVegetarian ? 'Vegetarian' : 'Non-vegetarian'}}" />
         </div>
-        <div><img class="img-rounded img-responsive" src="./img/image-not-found.png"/></div>
+        <div><img class="img-rounded img-responsive" ng-src="{{$ctrl.imageSource}}"/></div>
         <br/>
         
         <div><span>A perfect dish for <b>{{ $ctrl.selectedDish.feedsAmount }}</b> hungry mouth{{($ctrl.selectedDish.feedsAmount > 1) ? 's' : ''}}!</span></div>

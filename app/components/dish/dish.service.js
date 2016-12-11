@@ -1,10 +1,28 @@
 (function() {
     "use strict";
 
-    angular.module('lekkersakosApp.dish').factory('DishService', function($resource) {
+    angular.module('lekkersakosApp.dish').service('DishService', function($q, $resource) {
 
-        // can add :id (or any other url criteria) to bolster the type of functions $resource can do.
-        return $resource('/api/dishes');
+        this.getAll = function() {
+            var deferred = $q.defer();
 
+            var resource = $resource('/api/dishes');
+            resource.query().$promise.then(function(response) {
+                deferred.resolve(response);
+            });
+
+            return deferred.promise;
+        };
+
+        this.getImageLocation = function(dishId) {
+            var deferred = $q.defer();
+
+            var resource = $resource('/api/dishes/image/:dishId');
+            resource.get({dishId: dishId}).$promise.then(function(response) {
+                deferred.resolve(response);
+            });
+
+            return deferred.promise;
+        };
     });
 })();

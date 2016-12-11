@@ -1,7 +1,7 @@
 (function() {
     "use strict";
 
-    angular.module('lekkersakosApp.dish').controller('DishCtrl', function(DishService, FlashMessageService) {
+    angular.module('lekkersakosApp.dish').controller('DishCtrl', function(DishService) {
 
         var $ctrl = this;
 
@@ -10,19 +10,18 @@
         $ctrl.orderReverse = false;
 
         $ctrl.init = function() {
-            DishService.query(function(data) {
-                $ctrl.dishes = data;
-                
-                if ($ctrl.dishes && $ctrl.dishes.length > 0) {
-                    $ctrl.selectedDish = $ctrl.dishes[0];
-                }
-            }, function(error) {
-                FlashMessageService.error(error);
+            DishService.getAll().then(function(response) {
+                $ctrl.dishes = response;
             });
         };
         
         $ctrl.selectDish = function(dish) {
             $ctrl.selectedDish = dish;
+            $ctrl.imageSource = './img/image-not-found.png';
+            
+            DishService.getImageLocation(dish.id).then(function(response) {
+                $ctrl.imageSource = response.imageLocation;
+            });
         };
 
     });

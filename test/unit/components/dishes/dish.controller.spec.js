@@ -8,16 +8,16 @@ describe('lekkersakosApp.dish', function() {
         var scope;
         var dishCtrl;
         var queryPromise;
-        var DishServiceStub, FlashMesageServiceStub;
+        var DishServiceStub;
         
         beforeEach(inject(function($q, $rootScope, $controller) {
             scope = $rootScope.$new();
             queryPromise = $q.defer();
             
             DishServiceStub = {
-                query: function() {}
+                getAll: function() {}
             };
-            spyOn(DishServiceStub, 'query').and.callFake(function(success, error) {
+            spyOn(DishServiceStub, 'getAll').and.callFake(function(success, error) {
                 queryPromise.promise.then(success, error);
             });
             
@@ -30,8 +30,7 @@ describe('lekkersakosApp.dish', function() {
             
             dishCtrl = $controller('DishCtrl', {
                 '$scope': scope,
-                'DishService': DishServiceStub,
-                'FlashMessageService': FlashMesageServiceStub
+                'DishService': DishServiceStub
             });
             
         }));
