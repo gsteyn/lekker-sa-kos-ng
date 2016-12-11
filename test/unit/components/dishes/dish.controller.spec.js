@@ -7,30 +7,35 @@ describe('lekkersakosApp.dish', function() {
     describe('DishCtrl', function() {
         var scope;
         var dishCtrl;
-        var queryPromise;
-        var DishServiceStub;
+        var queryPromise, imagePromise;
+        var DishServiceStub, FlashMessageServiceStub;
         
         beforeEach(inject(function($q, $rootScope, $controller) {
             scope = $rootScope.$new();
             queryPromise = $q.defer();
+            imagePromise = $q.defer();
             
             DishServiceStub = {
-                getAll: function() {}
+                getAll: function() {},
+                getImageLocation: function() {}
             };
-            spyOn(DishServiceStub, 'getAll').and.callFake(function(success, error) {
-                queryPromise.promise.then(success, error);
+            spyOn(DishServiceStub, 'getAll').and.callFake(function() {
+                return queryPromise.promise;
+            });
+            spyOn(DishServiceStub, 'getImageLocation').and.callFake(function() {
+                return imagePromise.promise;
             });
             
-            FlashMesageServiceStub = {
-                error: function() {
-                    return 'errorTest';
-                }
+            FlashMessageServiceStub = {
+                error: function() {},
+                clear: function() {}
             };
-            spyOn(FlashMesageServiceStub, 'error');
+            spyOn(FlashMessageServiceStub, 'error');
             
             dishCtrl = $controller('DishCtrl', {
                 '$scope': scope,
-                'DishService': DishServiceStub
+                'DishService': DishServiceStub,
+                'FlashMessageService': FlashMessageServiceStub
             });
             
         }));
@@ -47,12 +52,11 @@ describe('lekkersakosApp.dish', function() {
                     }
                 ]);
                 
-                // this is needed to ensure that the callback function for success is called
+                // needed to ensure that the then() function of the promise is called
                 scope.$root.$digest();
                 
                 expect(dishCtrl.dishes).toBeDefined();
                 expect(dishCtrl.dishes.length).toEqual(1);
-                expect(dishCtrl.selectedDish).toBeDefined();
             });
             
             it('should indicate an error if an error occurred while getting dishes', function() {
@@ -61,7 +65,7 @@ describe('lekkersakosApp.dish', function() {
                 
                 queryPromise.reject('No dishes found');
                 
-                // this is needed to ensure that the callback function for error is called
+                // needed to ensure that the then() function of the promise is called
                 scope.$root.$digest();
                 
                 expect(dishCtrl.dishes).toBeUndefined();
@@ -70,15 +74,38 @@ describe('lekkersakosApp.dish', function() {
         });
         
         describe('when selecting dishes', function() {
+            var dishMock;
             
-            it('should set the selected dish to $ctrl.selectedDish', function() {
-                var dishMock = {
+            beforeEach(function() {
+                dishMock = {
+                    'id': 1,
                     'name': 'Dish1'
                 };
                 
                 dishCtrl.selectDish(dishMock);
+            });
+            
+            it('should retrieve the image of the selected dish', function() {
+                var imageLocationMock = {
+                    'imageLocation': 'test/location'
+                };
+                
+                imagePromise.resolve(imageLocationMock);
+                
+                // needed to ensure that the then() function of the promise is called
+                scope.$root.$digest();
                 
                 expect(dishCtrl.selectedDish).toEqual(dishMock);
+                expect(dishCtrl.imageSource).toEqual(imageLocationMock.imageLocation);
+            });
+            
+            it('should display an error if an error occurred', function() {
+                imagePromise.reject('An error occurred');
+                
+                // needed to ensure that the then() function of the promise is called
+                scope.$root.$digest();
+                
+                expect(FlashMessageServiceStub.error).toHaveBeenCalled();
             });
             
         });

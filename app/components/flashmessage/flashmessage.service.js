@@ -5,8 +5,9 @@
 
         var service = {};
 
-        service.success = success;
         service.error = error;
+        
+        service.clear = clearFlashMessage;
 
         initService();
 
@@ -16,25 +17,6 @@
             $rootScope.$on('$locationChangeStart', function () {
                 clearFlashMessage();
             });
-
-            function clearFlashMessage() {
-                var flash = $rootScope.flash;
-                if (flash) {
-                    if (!flash.keepAfterLocationChange) {
-                        delete $rootScope.flash;
-                    } else {
-                        flash.keepAfterLocationChange = false;
-                    }
-                }
-            }
-        }
-
-        function success(message, keepAfterLocationChange) {
-            $rootScope.flash = {
-                message: message,
-                type: 'success', 
-                keepAfterLocationChange: keepAfterLocationChange
-            };
         }
 
         function error(message, keepAfterLocationChange) {
@@ -43,6 +25,17 @@
                 type: 'error',
                 keepAfterLocationChange: keepAfterLocationChange
             };
+        }
+        
+        function clearFlashMessage() {
+            var flash = $rootScope.flash;
+            if (flash) {
+                if (!flash.keepAfterLocationChange) {
+                    delete $rootScope.flash;
+                } else {
+                    flash.keepAfterLocationChange = false;
+                }
+            }
         }
 
     });
